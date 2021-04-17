@@ -1,0 +1,59 @@
+test:
+  name: basic-contract-benchmark
+  description: A test benchmark
+  workers:
+    type: local
+    number: 4
+  rounds:
+    - label: init
+      description: Init ledger
+      txNumber: 1
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: workload/init.js
+        arguments:
+          contractId: used_thing_cc
+    - label: common
+      description: common
+      txDuration: 60
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 20
+      workload:
+        module: workload/common.js
+        arguments:
+          contractId: used_thing_cc
+    - label: clean
+      description: clean
+      txNumber: 1
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: workload/clean.js
+        arguments:
+          contractId: used_thing_cc
+
+observer:
+  type: prometheus
+  interval: 1
+monitor:
+  interval: 5
+  type: ['docker', 'prometheus']
+  docker:
+    containers: ['peer0.org1.example.com', 'peer1.org1.example.com', 'peer0.org2.example.com', 'peer1.org2.example.com', 'orderer.example.com', 'orderer2.example.com', 'orderer3.example.com']
+  prometheus:
+    url: 'http://localhost:9090'
+    metrics:
+      ignore: [prometheus, pushGateway, cadvisor, grafana, node-exporter]
+      include:
+        Endorse Time (s):
+          query: rate(endorser_propsal_duration_sum{chaincode="marbles:v0"}[5m])/rate(endorser_propsal_duration_count{chaincode="marbles:v0"}[5m])
+          step: 1
+          label: instance
+          statistic: avg

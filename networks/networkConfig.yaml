@@ -1,0 +1,43 @@
+name: Caliper test
+version: "2.0.0"
+
+caliper:
+  blockchain: fabric
+
+channels:
+  - channelName: mychannel
+    contracts:
+    - id: used_thing_cc
+
+organizations:
+  - mspid: Org1MSP
+    identities:
+      certificates:
+        - name: 'User1'
+          clientPrivateKey:
+            path: './certs/org1/user1.key'
+          clientSignedCert:
+            path: './certs/org1/user1.pem'
+        - name: 'User2'
+          clientPrivateKey:
+            path: './certs/org1/user2.key'
+          clientSignedCert:
+            path: './certs/org1/user2.pem'
+        - name: 'User3'
+          clientPrivateKey:
+            path: './certs/org1/user3.key'
+          clientSignedCert:
+            path: './certs/org1/user3.pem'
+        - name: 'User4'
+          clientPrivateKey:
+            path: './certs/org1/user4.key'
+          clientSignedCert:
+            path: './certs/org1/user4.pem'
+        - name: 'User5'
+          clientPrivateKey:
+            path: './certs/org1/user5.key'
+          clientSignedCert:
+            path: './certs/org1/user5.pem'
+    connectionProfile:
+      path: './connection/connection-org1.json'
+      discover: true
